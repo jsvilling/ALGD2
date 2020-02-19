@@ -80,12 +80,4 @@ public class UnsortedSet<E extends Comparable<E>> extends
 		return size;
 	}
 
-	public static void main(String[] args) {
-		UnsortedSet<Integer> bag = new UnsortedSet<Integer>();
-		bag.add(2);
-		bag.add(2);
-		bag.add(1);
-		System.out.println(Arrays.toString(bag.toArray()));
-	}
-
 }
