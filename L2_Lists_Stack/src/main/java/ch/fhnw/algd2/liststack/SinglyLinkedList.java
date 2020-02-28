@@ -1,7 +1,9 @@
+package ch.fhnw.algd2.liststack;
+
 import java.util.NoSuchElementException;
 
 /**
- * SinglyLinkedList implementation for ALGD2
+ * ch.fhnw.algd2.liststack.SinglyLinkedList implementation for ALGD2
  *
  * @author J. VIlling
  */

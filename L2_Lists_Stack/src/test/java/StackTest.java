@@ -1,9 +1,8 @@
+import ch.fhnw.algd2.liststack.Stack;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.NoSuchElementException;
-
-import static org.junit.Assert.*;
 
 public class StackTest {
 

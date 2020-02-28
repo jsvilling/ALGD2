@@ -1,3 +1,5 @@
+package ch.fhnw.algd2.liststack;
+
 /**
  * Stack Implementation using {@link SinglyLinkedList<T>} for ALGD2
  *
@@ -26,5 +28,13 @@ public class Stack<T> {
 
     public boolean isEmpty() {
         return list.size() == 0;
+    }
+
+    public int size() {
+        return list.size();
+    }
+
+    public String toString() {
+        return list.toString();
     }
 }
