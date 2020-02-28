@@ -1,14 +1,14 @@
 import org.junit.Assert;
 import org.junit.Test;
 
-public class SinglyLinkedListTest {
+import java.util.NoSuchElementException;
 
-    private SinglyLinkedList<String> list;
+public class SinglyLinkedListTest {
 
     @Test
     public void insertFirst_EmptyList() {
         // Given
-        list = new SinglyLinkedList<>();
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
 
         // When
         list.insertFirst("2");
@@ -20,7 +20,7 @@ public class SinglyLinkedListTest {
     @Test
     public void insertFirst_MultipleCalls() {
         // Given
-        list = new SinglyLinkedList<>();
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
 
         // When
         list.insertFirst("2");
@@ -39,7 +39,7 @@ public class SinglyLinkedListTest {
     @Test
     public void insertAfter() {
         // Given
-        list = new SinglyLinkedList<>();
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
         list.insertFirst("2");
         list.insertFirst("q");
 
@@ -48,17 +48,60 @@ public class SinglyLinkedListTest {
         list.insertAfter("5", 1);
 
         // Then
-        Assert.assertEquals("4", list.get(0));
-        Assert.assertEquals("2", list.get(1));
+        Assert.assertEquals("q", list.get(0));
+        Assert.assertEquals("4", list.get(1));
         Assert.assertEquals("5", list.get(2));
-        Assert.assertEquals("q", list.get(3));
+        Assert.assertEquals("2", list.get(3));
         Assert.assertEquals(4, list.size());
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void insertAfter_NegativeIndex() {
+        // Given
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
+        list.insertFirst("2");
+
+        // When
+        list.insertAfter("a", -1);
+    }
+
+    @Test(expected = IndexOutOfBoundsException.class)
+    public void insertAfter_IndexLargerThanSize() {
+        // Given
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
+        list.insertFirst("2");
+
+        // When
+        list.insertAfter("a", 500);
+    }
+
+    @Test
+    public void getFirst() {
+        // Given
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
+        list.insertFirst("2");
+        list.insertFirst("q");
+
+        // When
+        String first = list.getFirst();
+
+        // Then
+        Assert.assertEquals("q", first);
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void getFirst_EmptyList() {
+        // Given
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
+
+        // When
+        list.getFirst();
     }
 
     @Test
     public void removeFirst() {
         // Given
-        list = new SinglyLinkedList<>();
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
         list.insertFirst("2");
         list.insertFirst("q");
         list.insertAfter("4", 0);
@@ -68,16 +111,25 @@ public class SinglyLinkedListTest {
         list.removeFirst();
 
         // Then
-        Assert.assertEquals("5", list.get(0));
-        Assert.assertEquals("4", list.get(1));
-        Assert.assertEquals("q", list.get(2));
+        Assert.assertEquals("4", list.get(0));
+        Assert.assertEquals("5", list.get(1));
+        Assert.assertEquals("2", list.get(2));
         Assert.assertEquals(3, list.size());
+    }
+
+    @Test(expected = NoSuchElementException.class)
+    public void removeFirst_EmptyList() {
+        // Given
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
+
+        // When
+        list.removeFirst();
     }
 
     @Test
     public void remove() {
         // Given
-        list = new SinglyLinkedList<>();
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
         list.insertFirst("2");
         list.insertFirst("q");
         list.insertAfter("4", 0);
@@ -87,7 +139,7 @@ public class SinglyLinkedListTest {
         list.remove(2);
 
         // Then
-        Assert.assertEquals("5", list.get(0));
+        Assert.assertEquals("q", list.get(0));
         Assert.assertEquals("4", list.get(1));
         Assert.assertEquals("2", list.get(2));
         Assert.assertEquals(3, list.size());
@@ -96,7 +148,7 @@ public class SinglyLinkedListTest {
     @Test
     public void removeAll() {
         // Given
-        list = new SinglyLinkedList<>();
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
         list.insertFirst("2");
         list.insertFirst("q");
         list.insertAfter("4", 0);
@@ -112,10 +164,17 @@ public class SinglyLinkedListTest {
     @Test
     public void testToString() {
         // Given
+        // Given
+        SinglyLinkedList<String> list = new SinglyLinkedList<>();
+        list.insertFirst("2");
+        list.insertFirst("q");
+        list.insertAfter("4", 0);
+        list.insertAfter("5", 1);
 
         // When
+        String stringList = list.toString();
 
         // Then
-
+        Assert.assertEquals("[q, 4, 5, 2]", stringList);
     }
 }

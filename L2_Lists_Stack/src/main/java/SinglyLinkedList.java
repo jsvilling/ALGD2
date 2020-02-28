@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 /**
  * SinglyLinkedList implementation for ALGD2
  *
@@ -15,18 +17,26 @@ public class SinglyLinkedList<E> {
 
     public SinglyLinkedList(SinglyLinkedList<E> original) {
         this();
-        for (int i = 0; i < original.size(); i++) {
-            this.insertAfter(original.get(i), i - 1);
+        if (original.size > 0) {
+            this.insertFirst(original.getFirst());
+            for (int i = 1; i < original.size(); i++) {
+                this.insertAfter(original.get(i), i - 1);
+            }
         }
     }
 
     public void insertFirst(E e) {
-        insertAfter(e, -1);
+        Element<E> newElement = new Element<>(e);
+        if (head.next != null) {
+            newElement.next = head.next;
+        }
+        head.next = newElement;
+        size++;
     }
 
     public void insertAfter(E e, int i) {
-        if (i > size) {
-            throw new IllegalStateException();
+        if (i > size || i < 0) {
+            throw new IndexOutOfBoundsException();
         }
         Element<E> newElement = new Element<>(e);
         Element<E> prev = head;
@@ -41,6 +51,9 @@ public class SinglyLinkedList<E> {
     }
 
     public void removeFirst() {
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
         remove(0);
     }
 
@@ -58,12 +71,18 @@ public class SinglyLinkedList<E> {
     }
 
     public void removeAll() {
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
         head.next = null;
         size = 0;
     }
 
     public E getFirst() {
-        return size == 0 ? null : head.next.data;
+        if (size == 0) {
+            throw new NoSuchElementException();
+        }
+        return head.next.data;
     }
 
     public E get(int i) {
