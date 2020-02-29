@@ -1,4 +1,4 @@
-import ch.fhnw.algd2.liststack.Stack;
+import ch.fhnw.algd2.l2.stack.Stack;
 import org.junit.Assert;
 import org.junit.Test;
 

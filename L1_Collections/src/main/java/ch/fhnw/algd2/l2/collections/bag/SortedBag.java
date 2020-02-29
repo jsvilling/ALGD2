@@ -1,8 +1,4 @@
-package ch.fhnw.algd2.collections.bag;
-
-import java.util.Arrays;
-
-import ch.fhnw.algd2.collections.MyAbstractCollection;
+package ch.fhnw.algd2.l2.collections.bag;
 
 import static java.lang.Math.abs;
 import static java.util.Arrays.binarySearch;

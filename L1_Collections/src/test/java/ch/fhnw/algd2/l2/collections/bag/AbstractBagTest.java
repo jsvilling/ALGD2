@@ -1,7 +1,7 @@
-package ch.fhnw.algd2.collections.bag;
+package ch.fhnw.algd2.l2.collections.bag;
 
 import static org.junit.Assert.assertTrue;
-import ch.fhnw.algd2.collections.AbstractCollectionTest;
+import ch.fhnw.algd2.l2.collections.AbstractCollectionTest;
 
 public abstract class AbstractBagTest extends AbstractCollectionTest {
 

@@ -1,10 +1,10 @@
-package ch.fhnw.algd2.collections.bag;
+package ch.fhnw.algd2.l2.collections.bag;
 
 import static org.junit.Assert.assertFalse;
 
 import org.junit.Test;
 
-import ch.fhnw.algd2.collections.MyAbstractCollection;
+import ch.fhnw.algd2.l2.collections.MyAbstractCollection;
 
 public class UnsortedBagTest<E extends Comparable<E>> extends
 		AbstractBagTest {

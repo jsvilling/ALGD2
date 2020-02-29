@@ -1,7 +1,7 @@
-package railwaystation;
+package ch.fhnw.algd2.l2.railwaystation;
 
 
-import ch.fhnw.algd2.liststack.Stack;
+import ch.fhnw.algd2.l2.stack.Stack;
 
 public class RailwayStation {
 

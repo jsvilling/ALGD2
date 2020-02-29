@@ -1,7 +1,9 @@
-package ch.fhnw.algd2.liststack;
+package ch.fhnw.algd2.l2.stack;
+
+import ch.fhnw.algd2.l2.list.SinglyLinkedList;
 
 /**
- * Stack Implementation using {@link SinglyLinkedList<T>} for ALGD2
+ * Stack Implementation using {@link SinglyLinkedList <T>} for ALGD2
  *
  * @author J. Villing
  */

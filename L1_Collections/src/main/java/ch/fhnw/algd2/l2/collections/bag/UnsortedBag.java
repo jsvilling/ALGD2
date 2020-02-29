@@ -1,4 +1,4 @@
-package ch.fhnw.algd2.collections.bag;
+package ch.fhnw.algd2.l2.collections.bag;
 
 public class UnsortedBag<E extends Comparable<E>> extends AbstractBag<E> {
 

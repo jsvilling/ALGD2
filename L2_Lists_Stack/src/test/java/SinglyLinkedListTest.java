@@ -1,4 +1,4 @@
-import ch.fhnw.algd2.liststack.SinglyLinkedList;
+import ch.fhnw.algd2.l2.list.SinglyLinkedList;
 import org.junit.Assert;
 import org.junit.Test;
 

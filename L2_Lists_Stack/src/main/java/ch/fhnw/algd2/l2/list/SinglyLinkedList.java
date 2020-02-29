@@ -1,4 +1,4 @@
-package ch.fhnw.algd2.liststack;
+package ch.fhnw.algd2.l2.list;
 
 import java.util.NoSuchElementException;
 

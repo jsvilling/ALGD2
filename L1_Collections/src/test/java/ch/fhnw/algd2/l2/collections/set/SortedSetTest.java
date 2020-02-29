@@ -1,21 +1,22 @@
-package ch.fhnw.algd2.collections.set;
+package ch.fhnw.algd2.l2.collections.set;
 
 import static org.junit.Assert.assertFalse;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
 import org.junit.Test;
 
-import ch.fhnw.algd2.collections.MyAbstractCollection;
+import ch.fhnw.algd2.l2.collections.MyAbstractCollection;
 
-public class UnsortedSetTest extends AbstractSetTest {
+public class SortedSetTest extends AbstractSetTest {
 
 	@Override
 	protected MyAbstractCollection<Integer> createIntegerCollection(int size) {
-		return new UnsortedSet<Integer>(size);
+		return new SortedSet<Integer>(size);
 	}
 
 	@Override
@@ -23,6 +24,7 @@ public class UnsortedSetTest extends AbstractSetTest {
 
 		LinkedHashSet<Integer> set = new LinkedHashSet<Integer>(Arrays.asList(values));
 		List<Integer> list = new LinkedList<Integer>(set);
+		Collections.sort(list);
 		Integer[] elements = new Integer[list.size()];
 		int index = 0;
 		for (Integer element : list) {
@@ -30,7 +32,7 @@ public class UnsortedSetTest extends AbstractSetTest {
 		}
 		return elements;
 	}
-
+	
 	@Test(expected=ClassCastException.class)
 	public void containsOtherObject() {
 		Integer[] numbers = new Integer[] { 1, 2, 3 };

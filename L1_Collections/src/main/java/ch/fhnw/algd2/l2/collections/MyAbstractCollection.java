@@ -1,4 +1,4 @@
-package ch.fhnw.algd2.collections;
+package ch.fhnw.algd2.l2.collections;
 
 import java.util.AbstractCollection;
 import java.util.Iterator;

@@ -1,4 +1,4 @@
-package ch.fhnw.algd2.collections.set;
+package ch.fhnw.algd2.l2.collections.set;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
@@ -6,7 +6,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.HashSet;
 import java.util.Set;
 
-import ch.fhnw.algd2.collections.AbstractCollectionTest;
+import ch.fhnw.algd2.l2.collections.AbstractCollectionTest;
 
 public abstract class AbstractSetTest extends AbstractCollectionTest {
 
