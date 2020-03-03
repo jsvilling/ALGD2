@@ -111,39 +111,40 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
     private class CListIterator implements ListIterator<E> {
 
-        private Element<E> element;
         private int index;
 
         private Element<E> next;
+        private Element<E> returned;
 
         CListIterator(Element<E> head) {
-            this.element = head;
+            this.returned = head;
             this.next = head.next;
             this.index = -1;
         }
 
         @Override
         public boolean hasNext() {
-            return element.next != tail;
+            return next != tail;
         }
 
         @Override
         public E next() {
             index++;
-            element = element.next;
-            return element.data;
+            returned = next;
+            next = next.next;
+            return returned.data;
         }
 
         @Override
         public boolean hasPrevious() {
-            return element != ComparableList.this.head;
+            return returned != head;
         }
 
         @Override
         public E previous() {
             index--;
-            E data = element.data;
-            element = element.prev;
+            E data = returned.data;
+            returned = returned.prev;
             return data;
         }
 
@@ -159,21 +160,34 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
         @Override
         public void remove() {
-            element.prev.next = element.next;
-            element.next.prev = element.prev;
-            size--;
+            if (returned == null) {
+                throw new IllegalStateException();
+            } else {
+                if (returned == next) {
+                    next = returned.next;
+                } else index--;
+                ComparableList.this.remove(returned);
+                returned = null;
+            }
         }
 
         @Override
-        public void set(E e) {
-            element.data = e;
+        public void set(E data){
+            if (returned == null)
+                throw new IllegalStateException();
+            else{
+                if (! (data instanceof Comparable<?>)){
+                    throw new IllegalArgumentException();
+                }
+                returned.data = data;
+            }
         }
 
         @Override
         public void add(E e) {
-            Element<E> newElement = new Element<>(e, element, element.prev);
-            element.prev.next = newElement;
-            element.prev = newElement;
+            Element<E> newElement = new Element<>(e, returned, returned.prev);
+            returned.prev.next = newElement;
+            returned.prev = newElement;
             size++;
         }
     }
