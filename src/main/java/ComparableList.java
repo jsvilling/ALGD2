@@ -36,7 +36,7 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
     @Override
     public ListIterator<E> iterator() {
-        return new MyIterator(head);
+        return new CListIterator(head);
     }
 
     public void addHead(E e) {
@@ -109,13 +109,16 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         }
     }
 
-    private class MyIterator implements ListIterator<E> {
+    private class CListIterator implements ListIterator<E> {
 
         private Element<E> element;
         private int index;
 
-        MyIterator(Element<E> head) {
+        private Element<E> next;
+
+        CListIterator(Element<E> head) {
             this.element = head;
+            this.next = head.next;
             this.index = -1;
         }
 
