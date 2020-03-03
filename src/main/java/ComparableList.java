@@ -143,7 +143,7 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
         @Override
         public boolean hasPrevious() {
-            return returned != head && returned.prev != head;
+            return returned != head ;
         }
 
         @Override
