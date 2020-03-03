@@ -1,4 +1,5 @@
 import java.util.ListIterator;
+import java.util.stream.Stream;
 
 public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
@@ -13,15 +14,11 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
     public static void main(String[] args) {
         ComparableList<String> list = new ComparableList<>();
-        list.addHead("1");
-        list.addHead("2");
-        list.addHead("3");
-        list.addHead("4");
-        list.addHead("5");
-        list.addTail("tail1");
-        list.addTail("tail2");
-        list.addTail("tail3");
+        Stream.of("1", "2", "3", "4", "5").forEach(list::addHead);
+        Stream.of("addTail1", "addTail2", "addTail3").forEach(list::addTail);
+
         System.out.println(list);
+
         ListIterator<String> iterator = list.iterator();
         while (iterator.hasNext()) {
             System.out.print(iterator.next());
@@ -32,6 +29,15 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
             System.out.print(iterator.previous());
             System.out.print(" ");
         }
+        System.out.println();
+
+        String next = iterator.next();
+        System.out.println(next + " should be removed: ");
+        iterator.remove();
+        System.out.println(list);
+
+        iterator.add("addy");
+        System.out.println(list);
     }
 
     @Override
@@ -137,13 +143,14 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
         @Override
         public boolean hasPrevious() {
-            return returned != head;
+            return returned != head && returned.prev != head;
         }
 
         @Override
         public E previous() {
             index--;
             E data = returned.data;
+            next = next.prev;
             returned = returned.prev;
             return data;
         }
@@ -185,9 +192,9 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
         @Override
         public void add(E e) {
-            Element<E> newElement = new Element<>(e, returned, returned.prev);
-            returned.prev.next = newElement;
-            returned.prev = newElement;
+            Element<E> newElement = new Element<>(e, next, next.prev);
+            next.prev.next = newElement;
+            next.prev = newElement;
             size++;
         }
     }
