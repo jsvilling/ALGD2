@@ -176,7 +176,7 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
             if (returned == null)
                 throw new IllegalStateException();
             else{
-                if (! (data instanceof Comparable<?>)){
+                if (data == null){
                     throw new IllegalArgumentException();
                 }
                 returned.data = data;
