@@ -1,5 +1,4 @@
 import java.util.ListIterator;
-import java.util.stream.Stream;
 
 public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
@@ -76,6 +75,48 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         }
         sb.append("]");
         return sb.toString();
+    }
+
+    void sort() {
+        sort(this, 0, size);
+    }
+
+    void sort(ComparableList<E> list, int beg, int end) {
+        if (end - beg > 1) {
+            ComparableList<E> other = split();
+
+        }
+    }
+    
+    void merge(ComparableList<E> other) {
+        ListIterator<E> thisIterator = this.iterator();
+        ListIterator<E> otherIterator = other.iterator();
+        E thisElement = thisIterator.next();
+        E otherElement = otherIterator.next();
+
+        do {
+            if (thisElement.compareTo(otherElement) > 0) {
+                thisIterator.add(otherElement);
+                otherElement = otherIterator.next();
+            } else {
+                thisElement = thisIterator.next();
+            }
+        } while (thisIterator.hasNext() && otherIterator.hasNext());
+
+        while (otherIterator.hasNext()) {
+            thisIterator.add(otherIterator.next());
+        }
+    }
+
+    ComparableList<E> split() {
+        final int m = size >>> 1;
+        final ListIterator<E> iterator = this.iterator(m);
+        ComparableList<E> other = new ComparableList<>();
+        while (iterator.hasNext()) {
+            other.addTail(iterator.next());
+            iterator.remove();
+        }
+        return other;
     }
 
     private static class Element<E> {
