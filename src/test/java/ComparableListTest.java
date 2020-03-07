@@ -190,4 +190,32 @@ public class ComparableListTest {
         // When, Then
         Assertions.assertThrows(IllegalStateException.class, iterator::nextIndex);
     }
+
+    @Test
+    public void testIterator_DefaultStartIndex() {
+        // Given
+        ComparableList<String> list = new ComparableList<>();
+        Arrays.stream(DATA).forEach(list::addHead);
+
+        // When
+        ListIterator<String> iterator = list.iterator();
+
+        // Then
+        assertEquals(0, iterator.nextIndex());
+        assertEquals(DATA_REVERSE[0], iterator.next());
+    }
+
+    @Test
+    public void testIterator_CustomIndex() {
+        // Given
+        ComparableList<String> list = new ComparableList<>();
+        Arrays.stream(DATA).forEach(list::addHead);
+
+        // When
+        ListIterator<String> iterator = list.iterator(2);
+
+        // Then
+        assertEquals(2, iterator.nextIndex());
+        assertEquals(DATA_REVERSE[2], iterator.next());
+    }
 }

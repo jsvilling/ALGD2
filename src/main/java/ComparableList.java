@@ -42,8 +42,16 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
     @Override
     public ListIterator<E> iterator() {
-        return new CListIterator(head);
+        return new CListIterator();
     }
+
+    public ListIterator<E> iterator(int index) {
+        if (index >= size) {
+            throw new IllegalArgumentException();
+        }
+        return new CListIterator(index);
+    }
+
 
     public void addHead(E e) {
         Element<E> newElement = new Element<>(e, head.next, head);
@@ -122,10 +130,17 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         private Element<E> next;
         private Element<E> returned;
 
-        CListIterator(Element<E> head) {
+        CListIterator() {
             this.returned = head;
             this.next = head.next;
             this.index = -1;
+        }
+
+        CListIterator(int index) {
+            this();
+            for (int i = 0; i < index; i++) {
+                next();
+            }
         }
 
         @Override
@@ -143,7 +158,7 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
         @Override
         public boolean hasPrevious() {
-            return returned != head ;
+            return returned != head;
         }
 
         @Override
@@ -179,11 +194,11 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         }
 
         @Override
-        public void set(E data){
+        public void set(E data) {
             if (returned == null)
                 throw new IllegalStateException();
-            else{
-                if (data == null){
+            else {
+                if (data == null) {
                     throw new IllegalArgumentException();
                 }
                 returned.data = data;
