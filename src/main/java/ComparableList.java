@@ -12,34 +12,6 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         tail.prev = head;
     }
 
-    public static void main(String[] args) {
-        ComparableList<String> list = new ComparableList<>();
-        Stream.of("1", "2", "3", "4", "5").forEach(list::addHead);
-        Stream.of("addTail1", "addTail2", "addTail3").forEach(list::addTail);
-
-        System.out.println(list);
-
-        ListIterator<String> iterator = list.iterator();
-        while (iterator.hasNext()) {
-            System.out.print(iterator.next());
-            System.out.print(" ");
-        }
-        System.out.println();
-        while (iterator.hasPrevious()) {
-            System.out.print(iterator.previous());
-            System.out.print(" ");
-        }
-        System.out.println();
-
-        String next = iterator.next();
-        System.out.println(next + " should be removed: ");
-        iterator.remove();
-        System.out.println(list);
-
-        iterator.add("addy");
-        System.out.println(list);
-    }
-
     @Override
     public ListIterator<E> iterator() {
         return new CListIterator();
@@ -51,7 +23,6 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         }
         return new CListIterator(index);
     }
-
 
     public void addHead(E e) {
         Element<E> newElement = new Element<>(e, head.next, head);
