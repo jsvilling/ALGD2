@@ -1,4 +1,5 @@
 import java.util.ListIterator;
+import java.util.stream.Stream;
 
 public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
 
@@ -9,6 +10,16 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
     public ComparableList() {
         head.next = tail;
         tail.prev = head;
+    }
+
+    public static void main(String[] args) {
+        ComparableList<Double> l1 = new ComparableList<>();
+//        Stream.generate(Math::random).map(i -> 10 * i).limit(2).forEach(l1::addHead);
+        Stream.of(100.0, 1.0, 200.0).forEach(l1::addHead);
+
+        l1.mergeSort();
+
+        System.out.println(l1);
     }
 
     @Override
@@ -77,46 +88,52 @@ public class ComparableList<E extends Comparable<E>> implements Iterable<E> {
         return sb.toString();
     }
 
-    void sort() {
-        sort(this, 0, size);
-    }
-
-    void sort(ComparableList<E> list, int beg, int end) {
-        if (end - beg > 1) {
-            ComparableList<E> other = split();
-
+    public void mergeSort() {
+        if (this.size > 1) {
+            ComparableList<E> leftPart = this.split();
+            leftPart.mergeSort();
+            this.mergeSort();
+            merge(leftPart);
         }
     }
-    
-    void merge(ComparableList<E> other) {
+
+
+    public void merge(ComparableList<E> other) {
         ListIterator<E> thisIterator = this.iterator();
         ListIterator<E> otherIterator = other.iterator();
-        E thisElement = thisIterator.next();
-        E otherElement = otherIterator.next();
-
-        do {
-            if (thisElement.compareTo(otherElement) > 0) {
-                thisIterator.add(otherElement);
-                otherElement = otherIterator.next();
+        ListIterator<E> insertionIterator = this.iterator();
+        E thisElement, otherElement;
+        while (thisIterator.hasNext() && otherIterator.hasNext()) {
+            thisElement = thisIterator.next();
+            otherElement = otherIterator.next();
+            if (thisElement.compareTo(otherElement) < 0) {
+                insertionIterator.add(thisElement);
+                otherIterator.previous();
             } else {
-                thisElement = thisIterator.next();
+                insertionIterator.add(otherElement);
+                thisIterator.previous();
             }
-        } while (thisIterator.hasNext() && otherIterator.hasNext());
-
+        }
         while (otherIterator.hasNext()) {
-            thisIterator.add(otherIterator.next());
+            insertionIterator.add(otherIterator.next());
+        }
+        while (thisIterator.hasNext()) {
+            insertionIterator.add(thisIterator.next());
+        }
+        while (insertionIterator.hasNext()) {
+            insertionIterator.next();
+            insertionIterator.remove();
         }
     }
 
-    ComparableList<E> split() {
-        final int m = size >>> 1;
-        final ListIterator<E> iterator = this.iterator(m);
-        ComparableList<E> other = new ComparableList<>();
-        while (iterator.hasNext()) {
-            other.addTail(iterator.next());
-            iterator.remove();
+
+    public ComparableList<E> split() {
+        ComparableList<E> leftPart = new ComparableList<E>();
+        int size = this.size / 2;
+        for (int i = 0; i < size; ++i) {
+            leftPart.addTail(this.removeHead());
         }
-        return other;
+        return leftPart;
     }
 
     private static class Element<E> {

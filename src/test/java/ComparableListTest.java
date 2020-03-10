@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.ListIterator;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -217,5 +218,18 @@ public class ComparableListTest {
         // Then
         assertEquals(2, iterator.nextIndex());
         assertEquals(DATA_REVERSE[2], iterator.next());
+    }
+
+    @Test
+    public void testMergeSort() {
+        // Given
+        ComparableList<Double> l1 = new ComparableList<>();
+        Stream.generate(Math::random).limit(10).forEach(l1::addHead);
+
+        // When
+        l1.mergeSort();
+
+        // Then
+        System.out.println(l1.toString());
     }
 }
