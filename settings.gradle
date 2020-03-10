@@ -2,4 +2,5 @@ rootProject.name = 'ALGD2'
 include 'L1_Collections'
 include 'L2_Lists_Stack'
 include 'L3_DoublyLinkedList_MergeSort'
+include 'L4_Trees'
 

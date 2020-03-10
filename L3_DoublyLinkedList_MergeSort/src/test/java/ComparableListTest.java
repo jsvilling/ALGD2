@@ -49,7 +49,7 @@ public class ComparableListTest {
         String head = list.removeHead();
 
         // Then
-        assertEquals(DATA[DATA.length - 1], head);
+        Assertions.assertEquals(DATA[DATA.length - 1], head);
         assertEquals("[asdas, as, asdf]", list.toString());
     }
 
@@ -63,7 +63,7 @@ public class ComparableListTest {
         String tail = list.removeTail();
 
         // Then
-        assertEquals(DATA[0], tail);
+        Assertions.assertEquals(DATA[0], tail);
         assertEquals("[aaa, asdas, as]", list.toString());
     }
 
@@ -89,8 +89,8 @@ public class ComparableListTest {
         }
 
         // Then
-        assertEquals(DATA.length, backwards.length);
-        assertEquals(DATA.length, forward.length);
+        Assertions.assertEquals(DATA.length, backwards.length);
+        Assertions.assertEquals(DATA.length, forward.length);
         Assertions.assertArrayEquals(DATA_REVERSE, backwards);
         Assertions.assertArrayEquals(DATA, forward);
     }
@@ -164,7 +164,7 @@ public class ComparableListTest {
         int i = iterator.previousIndex();
 
         // Then
-        assertEquals(2, i);
+        Assertions.assertEquals(2, i);
     }
 
     @Test
@@ -202,8 +202,8 @@ public class ComparableListTest {
         ListIterator<String> iterator = list.iterator();
 
         // Then
-        assertEquals(0, iterator.nextIndex());
-        assertEquals(DATA_REVERSE[0], iterator.next());
+        Assertions.assertEquals(0, iterator.nextIndex());
+        Assertions.assertEquals(DATA_REVERSE[0], iterator.next());
     }
 
     @Test
@@ -216,8 +216,8 @@ public class ComparableListTest {
         ListIterator<String> iterator = list.iterator(2);
 
         // Then
-        assertEquals(2, iterator.nextIndex());
-        assertEquals(DATA_REVERSE[2], iterator.next());
+        Assertions.assertEquals(2, iterator.nextIndex());
+        Assertions.assertEquals(DATA_REVERSE[2], iterator.next());
     }
 
     @Test
