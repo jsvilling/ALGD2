@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.function.Consumer;
 
 /**
  * Binary Tree implementation for ALGD2
@@ -24,6 +25,30 @@ public class BinaryTree<E> {
         root.left = buildTree(values, start, m);
         root.right = buildTree(values, m, end);
         return root;
+    }
+
+    private void forEachOrdered(Consumer<E> visitor) {
+        applyOrdered(rootNode, visitor);
+    }
+
+    private void applyOrdered(Node<E> node, Consumer<E> visitor) {
+        if (node != null) {
+            apply(node.left, visitor);
+            visitor.accept(node.data);
+            apply(node.right, visitor);
+        }
+    }
+
+    private void forEach(Consumer<E> visitor) {
+        apply(rootNode, visitor);
+    }
+
+    private void apply(Node<E> node, Consumer<E> visitor) {
+        if (node != null) {
+            apply(node.left, visitor);
+            apply(node.right, visitor);
+            visitor.accept(node.data);
+        }
     }
 
     private static class Node<E> {
