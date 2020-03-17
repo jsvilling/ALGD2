@@ -16,11 +16,19 @@ public class BinarySearchTree<E extends Comparable<E>> {
     public static void main(String[] args) {
         Integer[] is = {1, 2, 3, 4, 5, 6, 7};
         BinarySearchTree<Integer> tree = new BinarySearchTree<>(is);
-        System.out.println("In Order: ");
-        tree.forEach(System.out::println);
 
-        System.out.println("In Level Order: ");
-        tree.forEachLevelOrdered(System.out::println);
+        System.out.println("Tree: ");
+        tree.show();
+
+        System.out.println();
+        System.out.println("Removed 1: ");
+        tree.remove(1);
+        tree.show();
+
+        System.out.println();
+        System.out.println("Added 0: ");
+        tree.insert(0);
+        tree.show();
     }
 
     private Node<E> buildTree(E[] values, int start, int end) {
@@ -48,34 +56,28 @@ public class BinarySearchTree<E extends Comparable<E>> {
         }
     }
 
-    public void remove(E key) {
-        SearchResult<E> searchResult = find(key);
-        if (searchResult != null && searchResult.node != null) {
-            Node<E> p = searchResult.parent;
-            Node<E> c = searchResult.node;
-            if (c.left == null && c.right == null) {
-                p.right = null;
-                p.left = null;
-            } else if (c.left != null && c.right == null) {
-                if (searchResult.isLeftNode) {
-                    p.left = c.left;
-                } else {
-                    p.right = c.left;
-                }
-            } else if (c.left == null) {
-                if (searchResult.isLeftNode) {
-                    p.left = c.right;
-                } else {
-                    p.right = c.right;
-                }
-            } else {
-                Node<E> r = searchResult.node.left;
-                while (r.right != null)
-                    r = r.right;
-                remove(r.key);
-                searchResult.node.key = r.key;
-            }
+    public boolean remove(E key) {
+        SearchResult result = find(key);
+        if (result.node == null)                                  // nonexistent node
+            return false;
+        if (result.node.left == null && result.node.right == null) {       // no sons
+            if (result.isLeftNode)
+                result.parent.left = null;
+            else
+                result.parent.right = null;
+        } else if (result.node.left == null ^ result.node.right == null) {  // only one son
+            if (result.isLeftNode)
+                result.parent.left = (result.node.left != null ? result.node.left : result.node.right);
+            else
+                result.parent.right = (result.node.left != null ? result.node.left : result.node.right);
+        } else {                                                 // two sons
+            Node<E> r = result.node.left;   // search substitute
+            while (r.right != null)
+                r = r.right;
+            remove(r.key);         // process removal
+            result.node.key = r.key;
         }
+        return false;
     }
 
     public void insert(E key) {
@@ -94,23 +96,20 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     private SearchResult<E> find(E key) {
-        boolean isLeftNode = false;
-        Node<E> previous = null;
-        Node<E> current = rootNode;
-        while (current != null) {
-            if (current.key.equals(key)) {
-                return new SearchResult(current, previous, isLeftNode);
-            }
-            previous = current;
-            if (current.key.compareTo(key) < 0) {
-                current = current.left;
-                isLeftNode = true;
+        SearchResult<E> result = new SearchResult<>(rootNode, rootNode.right, false);
+        while (result.node != null) {
+            if (result.node.key == key)
+                return result;
+            result.parent = result.node;
+            if (key.compareTo(result.node.key) > 0) {
+                result.node = result.node.right;
+                result.isLeftNode = false;
             } else {
-                current = current.right;
-                isLeftNode = true;
+                result.node = result.node.left;
+                result.isLeftNode = true;
             }
         }
-        return null;
+        return result;
     }
 
     public void forEach(Consumer<E> c) {
@@ -156,6 +155,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     private static class SearchResult<E> {
+
         private Node<E> node;
         private Node<E> parent;
         private boolean isLeftNode;
