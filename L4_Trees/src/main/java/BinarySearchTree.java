@@ -6,12 +6,12 @@ import static java.util.Arrays.sort;
 
 public class BinarySearchTree<E extends Comparable<E>> {
 
+    private Node<E> rootNode;
+
     public BinarySearchTree(E[] values) {
         sort(values);
         rootNode = buildTree(values, 0, values.length - 1);
     }
-
-    private Node<E> rootNode;
 
     public static void main(String[] args) {
         Integer[] is = {1, 2, 3, 4, 5, 6, 7};
@@ -21,8 +21,8 @@ public class BinarySearchTree<E extends Comparable<E>> {
         tree.show();
 
         System.out.println();
-        System.out.println("Removed 1: ");
-        tree.remove(1);
+        System.out.println("Removed 2: ");
+        tree.remove(2);
         tree.show();
 
         System.out.println();
@@ -32,14 +32,13 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     private Node<E> buildTree(E[] values, int start, int end) {
-        Node node = null;
         if (start <= end) {
             int m = (start + end) / 2;
-            node = new Node(values[m]);
+            Node<E> node = new Node(values[m]);
             node.left = buildTree(values, start, m - 1);
             node.right = buildTree(values, m + 1, end);
         }
-        return node;
+        return null;
     }
 
     public void show() {
@@ -49,33 +48,38 @@ public class BinarySearchTree<E extends Comparable<E>> {
     private void show(Node root, int level) {
         if (root != null) {
             show(root.right, level + 1);
-            for (int i = 0; i < level; ++i)
+            for (int i = 0; i < level; ++i) {
                 System.out.print("    ");
+            }
             System.out.println(root.key);
             show(root.left, level + 1);
         }
     }
 
     public boolean remove(E key) {
-        SearchResult result = find(key);
-        if (result.node == null)                                  // nonexistent node
+        SearchResult<E> result = find(key);
+        if (result.node == null) {
             return false;
-        if (result.node.left == null && result.node.right == null) {       // no sons
-            if (result.isLeftNode)
+        }
+        if (result.node.hasNoChild()) {
+            if (result.isLeftNode) {
                 result.parent.left = null;
-            else
+            } else {
                 result.parent.right = null;
-        } else if (result.node.left == null ^ result.node.right == null) {  // only one son
-            if (result.isLeftNode)
-                result.parent.left = (result.node.left != null ? result.node.left : result.node.right);
-            else
-                result.parent.right = (result.node.left != null ? result.node.left : result.node.right);
-        } else {                                                 // two sons
-            Node<E> r = result.node.left;   // search substitute
-            while (r.right != null)
-                r = r.right;
-            remove(r.key);         // process removal
-            result.node.key = r.key;
+            }
+        } else if (result.node.hasOneChild()) {
+            if (result.isLeftNode) {
+                result.parent.left = result.node.hasLeftChild() ? result.node.left : result.node.right;
+            } else {
+                result.parent.right = result.node.hasLeftChild() ? result.node.left : result.node.right;
+            }
+        } else {
+            Node<E> node = result.node.left;
+            while (node.hasRightChild()) {
+                node = node.right;
+            }
+            remove(node.key);
+            result.node.key = node.key;
         }
         return false;
     }
@@ -152,6 +156,22 @@ public class BinarySearchTree<E extends Comparable<E>> {
         Node(E key) {
             this.key = key;
         }
+
+        private boolean hasNoChild() {
+            return !hasLeftChild() && !hasRightChild();
+        }
+
+        private boolean hasOneChild() {
+            return hasLeftChild() ^ hasRightChild();
+        }
+
+        private boolean hasRightChild() {
+            return right != null;
+        }
+
+        private boolean hasLeftChild() {
+            return left != null;
+        }
     }
 
     private static class SearchResult<E> {
@@ -165,6 +185,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
             this.parent = parent;
             this.isLeftNode = isLeftNode;
         }
+
     }
 
 
