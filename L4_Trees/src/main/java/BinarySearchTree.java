@@ -1,4 +1,7 @@
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.sort;
 
@@ -89,6 +92,26 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return null;
     }
 
+    private void traverse(Node<E> root, Consumer<E> c) {
+        if (root != null) {
+            c.accept(root.key);
+            traverse(root.left, c);
+            traverse(root.right, c);
+        }
+    }
+
+    private void traverseLevelOrder(Consumer<E> c) {
+        Deque<Node<E>> q = new ArrayDeque<>();
+        Node<E> current;
+        q.push(rootNode);
+        while (!q.isEmpty()) {
+            current = q.pop();
+            c.accept(current.key);
+            q.push(current.left);
+            q.push(current.right);
+        }
+    }
+
     private static class Node<E> {
         E key;
         Node<E> left;
@@ -108,5 +131,6 @@ public class BinarySearchTree<E extends Comparable<E>> {
             this.parent = parent;
         }
     }
+
 
 }
