@@ -10,27 +10,27 @@ public class BinaryTree {
     // ***** API *****************************************************************
 
     // ***** attributes, constants & nested classes ******************************
-    private Node m_root = new Node(Integer.MIN_VALUE);
+    private Node rootNode = new Node(Integer.MIN_VALUE);
 
     public BinaryTree() {
-        m_root.R = null;
+        rootNode.right = null;
     }
 
     public BinaryTree(int[] sorted) {
-        m_root.R = buildTree(sorted, 0, sorted.length - 1);
+        rootNode.right = buildTree(sorted, 0, sorted.length - 1);
     }
 
     public void show() {
         System.out.println();
-        traverse(m_root.R, 0);
+        traverse(rootNode.right, 0);
     }
 
     public boolean exists(int key) {
-        Node r = m_root.R;
+        Node r = rootNode.right;
         while (r != null) {
             if (r.key == key)
                 return true;
-            r = key > r.key ? r.R : r.L;
+            r = key > r.key ? r.right : r.left;
         }
         return false;
     }
@@ -40,9 +40,9 @@ public class BinaryTree {
         if (r.node != null)          // key exists already
             return false;
         if (r.isLeftChild)
-            r.parent.L = new Node(key);
+            r.parent.left = new Node(key);
         else
-            r.parent.R = new Node(key);
+            r.parent.right = new Node(key);
         return true;
     }
 
@@ -53,20 +53,20 @@ public class BinaryTree {
         SearchResult res = find(key);
         if (res.node == null)                                  // nonexistent node
             return false;
-        if (res.node.L == null && res.node.R == null) {       // no sons
+        if (res.node.left == null && res.node.right == null) {       // no sons
             if (res.isLeftChild)
-                res.parent.L = null;
+                res.parent.left = null;
             else
-                res.parent.R = null;
-        } else if (res.node.L == null ^ res.node.R == null) {  // only one son
+                res.parent.right = null;
+        } else if (res.node.left == null ^ res.node.right == null) {  // only one son
             if (res.isLeftChild)
-                res.parent.L = (res.node.L != null ? res.node.L : res.node.R);
+                res.parent.left = (res.node.left != null ? res.node.left : res.node.right);
             else
-                res.parent.R = (res.node.L != null ? res.node.L : res.node.R);
+                res.parent.right = (res.node.left != null ? res.node.left : res.node.right);
         } else {                                                 // two sons
-            Node r = res.node.L;   // search substitute
-            while (r.R != null)
-                r = r.R;
+            Node r = res.node.left;   // search substitute
+            while (r.right != null)
+                r = r.right;
             remove(r.key);         // process removal
             res.node.key = r.key;
         }
@@ -78,33 +78,33 @@ public class BinaryTree {
         if (start <= end) {
             int M = (start + end) / 2;
             ret = new Node(a[M]);
-            ret.L = buildTree(a, start, M - 1);
-            ret.R = buildTree(a, M + 1, end);
+            ret.left = buildTree(a, start, M - 1);
+            ret.right = buildTree(a, M + 1, end);
         }
         return ret;
     }
 
     private void traverse(Node root, int level) {
         if (root != null) {
-            traverse(root.R, level + 1);
+            traverse(root.right, level + 1);
             for (int i = 0; i < level; ++i)
                 System.out.print("    ");
             System.out.println(root.key);
-            traverse(root.L, level + 1);
+            traverse(root.left, level + 1);
         }
     }
 
     private SearchResult find(int key) {
-        SearchResult res = new SearchResult(m_root, m_root.R, false);
+        SearchResult res = new SearchResult(rootNode, rootNode.right, false);
         while (res.node != null) {
             if (res.node.key == key)
                 return res;
             res.parent = res.node;
             if (key > res.node.key) {
-                res.node = res.node.R;
+                res.node = res.node.right;
                 res.isLeftChild = false;
             } else {
-                res.node = res.node.L;
+                res.node = res.node.left;
                 res.isLeftChild = true;
             }
         }
@@ -121,8 +121,8 @@ public class BinaryTree {
 
     private static class Node {
         int key;
-        Node L;
-        Node R;
+        Node left;
+        Node right;
 
         Node(int key) {
             this.key = key;
