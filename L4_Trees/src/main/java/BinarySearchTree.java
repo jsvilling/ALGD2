@@ -14,7 +14,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     public static void main(String[] args) {
-        Integer[] is = {1, 2, 3, 4, 5, 6, 7};
+        Integer[] is = {2, 3, 4, 5, 7, 8, 10};
         BinarySearchTree<Integer> tree = new BinarySearchTree<>(is);
 
         System.out.println("Tree: ");
@@ -22,23 +22,25 @@ public class BinarySearchTree<E extends Comparable<E>> {
 
         System.out.println();
         System.out.println("Removed 2: ");
-        tree.remove(2);
+        tree.remove(20);
         tree.show();
 
         System.out.println();
         System.out.println("Added 0: ");
         tree.insert(0);
         tree.show();
+
     }
 
     private Node<E> buildTree(E[] values, int start, int end) {
+        Node<E> node = null;
         if (start <= end) {
             int m = (start + end) / 2;
-            Node<E> node = new Node(values[m]);
+            node = new Node(values[m]);
             node.left = buildTree(values, start, m - 1);
             node.right = buildTree(values, m + 1, end);
         }
-        return null;
+        return node;
     }
 
     public void show() {
@@ -88,9 +90,9 @@ public class BinarySearchTree<E extends Comparable<E>> {
         SearchResult<E> searchResult = find(key);
         if (searchResult.node == null) {
             if (searchResult.isLeftNode) {
-                searchResult.parent.left = new Node(key);
+                searchResult.parent.left = new Node<>(key);
             } else {
-                searchResult.parent.right = new Node(key);
+                searchResult.parent.right = new Node<>(key);
             }
         }
     }
@@ -100,10 +102,11 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     private SearchResult<E> find(E key) {
-        SearchResult<E> result = new SearchResult<>(rootNode, rootNode.right, false);
+        SearchResult<E> result = new SearchResult<>(rootNode, null, false);
         while (result.node != null) {
-            if (result.node.key == key)
+            if (result.node.key == key) {
                 return result;
+            }
             result.parent = result.node;
             if (key.compareTo(result.node.key) > 0) {
                 result.node = result.node.right;
