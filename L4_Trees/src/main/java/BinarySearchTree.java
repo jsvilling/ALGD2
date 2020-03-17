@@ -1,6 +1,4 @@
-
 import java.util.NoSuchElementException;
-import java.util.stream.IntStream;
 
 import static java.util.Arrays.sort;
 
@@ -10,7 +8,6 @@ public class BinarySearchTree<E extends Comparable<E>> {
 
     public BinarySearchTree(E[] values) {
         sort(values);
-        int[] keys = IntStream.range(0, values.length - 1).toArray();
         rootNode = buildTree(values, 0, values.length);
     }
 
@@ -22,37 +19,61 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return root;
     }
 
-    private static class Node<E> {
-        Node(E data) {
-            this.data = data;
+    public void insert(E key) {
+        Result<E> searchResult = findForgiving(key);
+        if (searchResult.result == null) {
+            Node<E> node = new Node<>(key);
+            if (searchResult.parent.left == null) {
+                searchResult.parent.left = node;
+            } else {
+                searchResult.parent.right = node;
+            }
         }
-        int key;
-        E data;
-        Node left;
-        Node right;
     }
 
     public E find(E key) {
-        E result = findForgiving(key);
-        if (result != null) {
-            return result;
+        Result<E> result = findForgiving(key);
+        if (result.result != null) {
+            return result.result.key;
         }
         throw new NoSuchElementException();
     }
 
     public boolean contains(E key) {
-        return findForgiving(key) != null;
+        return findForgiving(key).result != null;
     }
 
-    private E findForgiving(E key) {
+    private Result<E> findForgiving(E key) {
+        Node<E> previous = null;
         Node<E> current = rootNode;
         while (current != null) {
-            if (current.data.equals(key)) {
-                return rootNode.data;
+            if (current.key.equals(key)) {
+                return new Result(current, previous);
             }
-            current = rootNode.data.compareTo(key) > 0 ? current.left : current.right;
+            previous = current;
+            current = current.key.compareTo(key) > 0 ? current.left : current.right;
         }
         return null;
+    }
+
+    private static class Node<E> {
+        E key;
+        Node left;
+        Node right;
+
+        Node(E key) {
+            this.key = key;
+        }
+    }
+
+    private static class Result<E> {
+        private Node<E> result;
+        private Node<E> parent;
+
+        private Result(Node<E> result, Node<E> parent) {
+            this.result = result;
+            this.parent = parent;
+        }
     }
 
 }
