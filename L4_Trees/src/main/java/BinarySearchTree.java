@@ -19,6 +19,38 @@ public class BinarySearchTree<E extends Comparable<E>> {
         return root;
     }
 
+    public void remove(E key) {
+        Result<E> searchResult = findForgiving(key);
+        if (searchResult.result != null) {
+            Node<E> p = searchResult.parent;
+            Node<E> c = searchResult.result;
+            if (c.left == null && c.right == null) {
+                p.right = null;
+                p.left = null;
+            } else if (c.left != null && c.right == null) {
+                if (p.left.equals(c)) {
+                    p.left = c.left;
+                } else {
+                    p.right = c.left;
+                }
+            } else if (c.left == null && c.right != null) {
+                if (p.left.equals(c)) {
+                    p.left = c.right;
+                } else {
+                    p.right = c.right;
+                }
+            } else {
+                Node<E> n = c.right.key.compareTo(c.left.key) > 0 ? c.right : c.left;
+                if (p.left.equals(c)) {
+                    p.left = n;
+                } else {
+                    p.right = n;
+                }
+            }
+        }
+        throw new NoSuchElementException();
+    }
+
     public void insert(E key) {
         Result<E> searchResult = findForgiving(key);
         if (searchResult.result == null) {
@@ -29,6 +61,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
                 searchResult.parent.right = node;
             }
         }
+        throw new NoSuchElementException();
     }
 
     public E find(E key) {
@@ -58,8 +91,8 @@ public class BinarySearchTree<E extends Comparable<E>> {
 
     private static class Node<E> {
         E key;
-        Node left;
-        Node right;
+        Node<E> left;
+        Node<E> right;
 
         Node(E key) {
             this.key = key;
