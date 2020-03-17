@@ -1,9 +1,10 @@
-package ch.fhnw.algd2.tree.solution;//******************************************************************************
+package ch.fhnw.algd2.tree.solution;
+
+//******************************************************************************
 //  FHNW.ALGD2  -  Excercise 4 : Testing Binary Search Trees                   *
 // --------------------------------------------------------------------------  *
 //  version 2                                                             vtg  * 
 //******************************************************************************
-
 public class main_binTree {
 
   public static void main(String[] args) {
