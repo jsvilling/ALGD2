@@ -1,114 +1,147 @@
 import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.NoSuchElementException;
+import java.util.Queue;
 import java.util.function.Consumer;
 
 import static java.util.Arrays.sort;
 
 public class BinarySearchTree<E extends Comparable<E>> {
 
-    private Node<E> rootNode;
-
     public BinarySearchTree(E[] values) {
         sort(values);
-        rootNode = buildTree(values, 0, values.length);
+        rootNode = buildTree(values, 0, values.length - 1);
+    }
+
+    private Node<E> rootNode;
+
+    public static void main(String[] args) {
+        Integer[] is = {1, 2, 3, 4, 5, 6, 7};
+        BinarySearchTree<Integer> tree = new BinarySearchTree<>(is);
+        System.out.println("In Order: ");
+        tree.forEach(System.out::println);
+
+        System.out.println("In Level Order: ");
+        tree.forEachLevelOrdered(System.out::println);
     }
 
     private Node<E> buildTree(E[] values, int start, int end) {
-        int m = (end - start) / 2;
-        Node<E> root = new Node<>(values[m]);
-        root.left = buildTree(values, start, m);
-        root.right = buildTree(values, m, end);
-        return root;
+        Node node = null;
+        if (start <= end) {
+            int m = (start + end) / 2;
+            node = new Node(values[m]);
+            node.left = buildTree(values, start, m - 1);
+            node.right = buildTree(values, m + 1, end);
+        }
+        return node;
+    }
+
+    public void show() {
+        show(rootNode, 0);
+    }
+
+    private void show(Node root, int level) {
+        if (root != null) {
+            show(root.right, level + 1);
+            for (int i = 0; i < level; ++i)
+                System.out.print("    ");
+            System.out.println(root.key);
+            show(root.left, level + 1);
+        }
     }
 
     public void remove(E key) {
-        Result<E> searchResult = findForgiving(key);
-        if (searchResult.result != null) {
+        SearchResult<E> searchResult = find(key);
+        if (searchResult != null && searchResult.node != null) {
             Node<E> p = searchResult.parent;
-            Node<E> c = searchResult.result;
+            Node<E> c = searchResult.node;
             if (c.left == null && c.right == null) {
                 p.right = null;
                 p.left = null;
             } else if (c.left != null && c.right == null) {
-                if (p.left.equals(c)) {
+                if (searchResult.isLeftNode) {
                     p.left = c.left;
                 } else {
                     p.right = c.left;
                 }
-            } else if (c.left == null && c.right != null) {
-                if (p.left.equals(c)) {
+            } else if (c.left == null) {
+                if (searchResult.isLeftNode) {
                     p.left = c.right;
                 } else {
                     p.right = c.right;
                 }
             } else {
-                Node<E> n = c.right.key.compareTo(c.left.key) > 0 ? c.right : c.left;
-                if (p.left.equals(c)) {
-                    p.left = n;
-                } else {
-                    p.right = n;
-                }
+                Node<E> r = searchResult.node.left;
+                while (r.right != null)
+                    r = r.right;
+                remove(r.key);
+                searchResult.node.key = r.key;
             }
         }
-        throw new NoSuchElementException();
     }
 
     public void insert(E key) {
-        Result<E> searchResult = findForgiving(key);
-        if (searchResult.result == null) {
-            Node<E> node = new Node<>(key);
-            if (searchResult.parent.left == null) {
-                searchResult.parent.left = node;
+        SearchResult<E> searchResult = find(key);
+        if (searchResult.node == null) {
+            if (searchResult.isLeftNode) {
+                searchResult.parent.left = new Node(key);
             } else {
-                searchResult.parent.right = node;
+                searchResult.parent.right = new Node(key);
             }
         }
-        throw new NoSuchElementException();
-    }
-
-    public E find(E key) {
-        Result<E> result = findForgiving(key);
-        if (result.result != null) {
-            return result.result.key;
-        }
-        throw new NoSuchElementException();
     }
 
     public boolean contains(E key) {
-        return findForgiving(key).result != null;
+        return find(key).node != null;
     }
 
-    private Result<E> findForgiving(E key) {
+    private SearchResult<E> find(E key) {
+        boolean isLeftNode = false;
         Node<E> previous = null;
         Node<E> current = rootNode;
         while (current != null) {
             if (current.key.equals(key)) {
-                return new Result(current, previous);
+                return new SearchResult(current, previous, isLeftNode);
             }
             previous = current;
-            current = current.key.compareTo(key) > 0 ? current.left : current.right;
+            if (current.key.compareTo(key) < 0) {
+                current = current.left;
+                isLeftNode = true;
+            } else {
+                current = current.right;
+                isLeftNode = true;
+            }
         }
         return null;
     }
 
+    public void forEach(Consumer<E> c) {
+        traverse(rootNode, c);
+    }
+
     private void traverse(Node<E> root, Consumer<E> c) {
         if (root != null) {
-            c.accept(root.key);
             traverse(root.left, c);
+            c.accept(root.key);
             traverse(root.right, c);
         }
     }
 
+    private void forEachLevelOrdered(Consumer<E> c) {
+        traverseLevelOrder(c);
+    }
+
     private void traverseLevelOrder(Consumer<E> c) {
-        Deque<Node<E>> q = new ArrayDeque<>();
+        Queue<Node<E>> q = new ArrayDeque<>();
         Node<E> current;
-        q.push(rootNode);
+        q.add(rootNode);
         while (!q.isEmpty()) {
-            current = q.pop();
+            current = q.poll();
             c.accept(current.key);
-            q.push(current.left);
-            q.push(current.right);
+            if (current.left != null) {
+                q.add(current.left);
+            }
+            if (current.right != null) {
+                q.add(current.right);
+            }
         }
     }
 
@@ -122,13 +155,15 @@ public class BinarySearchTree<E extends Comparable<E>> {
         }
     }
 
-    private static class Result<E> {
-        private Node<E> result;
+    private static class SearchResult<E> {
+        private Node<E> node;
         private Node<E> parent;
+        private boolean isLeftNode;
 
-        private Result(Node<E> result, Node<E> parent) {
-            this.result = result;
+        private SearchResult(Node<E> node, Node<E> parent, boolean isLeftNode) {
+            this.node = node;
             this.parent = parent;
+            this.isLeftNode = isLeftNode;
         }
     }
 
