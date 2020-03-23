@@ -4,41 +4,23 @@ import java.util.function.Consumer;
 
 import static java.util.Arrays.sort;
 
-public class BinarySearchTree<E extends Comparable<E>> {
-
+public class MyAVLTree<E extends Comparable<E>> {
     private Node<E> rootNode;
 
-    public BinarySearchTree(E[] values) {
+    public MyAVLTree(E[] values) {
         sort(values);
+        rootNode = new Node<>(null);
         rootNode = buildTree(values, 0, values.length - 1);
     }
 
     public static void main(String[] args) {
-//        Integer[] is = {2, 3, 4, 5, 7, 8, 10};
-//        BinarySearchTree<Integer> tree = new BinarySearchTree<>(is);
-//
-//        System.out.println("Tree: ");
-//        tree.show();
-//
-//        System.out.println();
-//        System.out.println("Removed 2: ");
-//        tree.remove(20);
-//        tree.show();
-//
-//        System.out.println();
-//        System.out.println("Added 0: ");
-//        tree.insert(0);
-//        tree.show();
-
         Integer[] is = {17};
-        BinarySearchTree<Integer> tree = new BinarySearchTree<>(is);
+        MyAVLTree<Integer> tree = new MyAVLTree<>(is);
         tree.insert(20);
         tree.insert(14);
         tree.insert(25);
         tree.insert(30);
         tree.show();
-
-
     }
 
     private Node<E> buildTree(E[] values, int start, int end) {
@@ -60,9 +42,9 @@ public class BinarySearchTree<E extends Comparable<E>> {
         if (root != null) {
             show(root.right, level + 1);
             for (int i = 0; i < level; ++i) {
-                System.out.print("    ");
+                System.out.print("        ");
             }
-            System.out.println(root.key);
+            System.out.println(root.key + " (" + root.balance + ")");
             show(root.left, level + 1);
         }
     }
@@ -98,12 +80,42 @@ public class BinarySearchTree<E extends Comparable<E>> {
     public void insert(E key) {
         SearchResult<E> searchResult = find(key);
         if (searchResult.node == null) {
+            Node<E> node = new Node<>(key);
+            node.parent = searchResult.parent;
+
             if (searchResult.isLeftNode) {
-                searchResult.parent.left = new Node<>(key);
+                searchResult.parent.left = node;
             } else {
-                searchResult.parent.right = new Node<>(key);
+                searchResult.parent.right = node;
             }
+            updateIn(node);
         }
+
+    }
+
+    private void updateIn(Node<E> node) {
+        Node<E> c = node;
+        System.out.println(c.key);
+        while (c.parent != null) {
+            if (c.parent.right == c) {
+                c.parent.balance++;
+            } else {
+                c.parent.balance--;
+            }
+
+            if (c.parent.balance > 1) {
+                rotateLeft(c.parent);
+                break; // I know, I know....
+            }
+
+
+            c = c.parent;
+        }
+    }
+
+    private void rotateLeft(Node<E> node) {
+        System.out.println("UNACCEPTABLE");
+
     }
 
     public boolean contains(E key) {
@@ -161,7 +173,9 @@ public class BinarySearchTree<E extends Comparable<E>> {
     }
 
     private static class Node<E> {
+        int balance;
         E key;
+        Node<E> parent;
         Node<E> left;
         Node<E> right;
 
@@ -186,6 +200,7 @@ public class BinarySearchTree<E extends Comparable<E>> {
         }
     }
 
+
     private static class SearchResult<E> {
 
         private Node<E> node;
@@ -199,6 +214,4 @@ public class BinarySearchTree<E extends Comparable<E>> {
         }
 
     }
-
-
 }
