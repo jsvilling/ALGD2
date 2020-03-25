@@ -20,6 +20,7 @@ public class MyAVLTree<E extends Comparable<E>> {
         tree.insert(14);
         tree.insert(25);
         tree.insert(30);
+        tree.insert(21);
         tree.show();
     }
 
@@ -88,14 +89,17 @@ public class MyAVLTree<E extends Comparable<E>> {
             } else {
                 searchResult.parent.right = node;
             }
-            updateIn(node);
+            if (searchResult.parent.hasOneChild()) {
+                updateIn(node);
+            } else {
+                searchResult.parent.balance = 0;
+            }
         }
 
     }
 
     private void updateIn(Node<E> node) {
         Node<E> c = node;
-        System.out.println(c.key);
         while (c.parent != null) {
             if (c.parent.right == c) {
                 c.parent.balance++;
@@ -105,17 +109,33 @@ public class MyAVLTree<E extends Comparable<E>> {
 
             if (c.parent.balance > 1) {
                 rotateLeft(c.parent);
-                break; // I know, I know....
             }
-
-
             c = c.parent;
         }
     }
 
     private void rotateLeft(Node<E> node) {
-        System.out.println("UNACCEPTABLE");
+        System.out.println("One triggery boy: " + node.key);
+        if (node.right.balance < 0) {
+            rotateRight(node.right);
+            return;
+        }
+        node.right.parent = node.parent;
+        node.parent.right = node.right;
+        node.parent = node.right;
+        node.right = node.right.left;
+        node.parent.left = node;
+        node.balance = 0;
+        node.parent.balance--;
+        updateIn(node);
+    }
 
+    private void rotateRight(Node<E> node) {
+        node.left.left = node.left.right;
+        node.left.parent = node.parent;
+        node.parent.right = node.left;
+        node.parent = node.left;
+        node.left.right = node;
     }
 
     public boolean contains(E key) {
