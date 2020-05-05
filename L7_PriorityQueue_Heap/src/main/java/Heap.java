@@ -1,10 +1,10 @@
 public class Heap {
 
-    public Heap() {
-    }
-
     private int size = 0;
     private Node root = null;
+
+    public Heap() {
+    }
 
     public Heap(int... priorities) {
         root = buildTree(priorities, 0, priorities.length - 1, null);
@@ -49,6 +49,18 @@ public class Heap {
         }
     }
 
+    private void sickleUp(Node node) {
+        if (node != null & node.parent != null && node.priority > node.parent.priority) {
+            int temp = node.priority;
+            node.priority = node.parent.priority;
+            node.parent.priority = temp;
+            sickleUp(node.parent);
+        }
+    }
+
+    /**
+     * @return Top element without deleting it
+     */
     public int get() {
         if (root == null) {
             throw new IllegalArgumentException();
@@ -56,6 +68,9 @@ public class Heap {
         return root.priority;
     }
 
+    /**
+     * @return Node at position pos
+     */
     private Node find(int pos) {
         Node result = root;
         int mask = getMask(pos);
@@ -86,7 +101,21 @@ public class Heap {
     }
 
     public int remove() {
-        return 0;
+        int result = root.priority;
+        if (size == 1) {
+            root = null;
+        } else {
+            Node latest = find(size);
+            root.priority = latest.priority;
+            if (latest.parent.left == latest) {
+                latest.parent.left = null;
+            } else {
+                latest.parent.right = null;
+            }
+            sickleUp(latest);
+        }
+        size--;
+        return result;
     }
 
     public void insert(int priority) {
@@ -136,7 +165,5 @@ public class Heap {
             }
             return left.priority > right.priority ? left : right;
         }
-
-
     }
 }
