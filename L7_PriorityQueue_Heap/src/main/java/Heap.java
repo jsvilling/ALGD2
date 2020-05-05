@@ -13,7 +13,11 @@ public class Heap {
     }
 
     public static void main(String[] args) {
-        Heap heap = new Heap(3, 2, 1, 32, 33);
+        Heap heap = new Heap(3, 2, 1);
+        heap.insert(32);
+        heap.insert(33);
+        heap.insert(34);
+        heap.remove();
         heap.show();
     }
 
@@ -49,8 +53,13 @@ public class Heap {
         }
     }
 
+    private void balanceNodesUp() {
+        Node node = find(size);
+        sickleUp(node);
+    }
+
     private void sickleUp(Node node) {
-        if (node != null & node.parent != null && node.priority > node.parent.priority) {
+        if (node != null && node.parent != null && node.priority > node.parent.priority) {
             int temp = node.priority;
             node.priority = node.parent.priority;
             node.parent.priority = temp;
@@ -112,9 +121,9 @@ public class Heap {
             } else {
                 latest.parent.right = null;
             }
-            sickleUp(latest);
         }
         size--;
+        balanceNodesDown();
         return result;
     }
 
@@ -128,6 +137,8 @@ public class Heap {
         } else {
             parent.right = newNode;
         }
+        size++;
+        balanceNodesUp();
     }
 
     public void show() {
