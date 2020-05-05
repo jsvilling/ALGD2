@@ -1,6 +1,3 @@
-import java.util.ArrayDeque;
-import java.util.Queue;
-
 public class Heap {
 
     public Heap() {
@@ -16,8 +13,37 @@ public class Heap {
     }
 
     public static void main(String[] args) {
-        Heap heap = new Heap(3, 2, 1);
+        Heap heap = new Heap(3, 2, 1, 32, 5, 12, 322, 123, 55);
         heap.show();
+//        System.out.println("find 1 " + heap.find(1).priority);
+//        System.out.println("find 2 " + heap.find(2).priority);
+//        System.out.println("find 3 " + heap.find(3).priority);
+//        System.out.println("find 4 " + heap.find(4).priority);
+
+        int pos = 8;
+        int mask = 0b10000000;
+        while (mask > 0) {
+            if ((pos & mask) != 0) {
+                break;
+            }
+            mask >>>= 1;
+        }
+
+        Node result = heap.root;
+        while (mask > 1) {
+            mask >>>= 1;
+
+
+            if ((pos & mask) == 0) {
+                result = result.left;
+            } else {
+                result = result.right;
+            }
+        }
+
+        System.out.println(result.priority);
+
+
     }
 
     private Node buildTree(int[] values, int start, int end) {
@@ -26,8 +52,8 @@ public class Heap {
             int m = (start + end) / 2;
             node = new Node();
             node.priority = values[m];
-            node.left = buildTree(values, start, m - 1);
-            node.right = buildTree(values, m + 1, end);
+            node.left = buildTree(values, m + 1, end);
+            node.right = buildTree(values, start, m - 1);
         }
         return node;
     }
@@ -37,7 +63,7 @@ public class Heap {
         while (m > 0) {
             Node node = find(m);
             sickleDown(node);
-            m /= 2;
+            m--;
         }
     }
 
@@ -58,30 +84,29 @@ public class Heap {
         return root.priority;
     }
 
-    private Node find(int i) {
-        Queue<Node> q = new ArrayDeque<>();
-        Node current = null;
-        q.add(root);
-        int c = 1;
-        while (!q.isEmpty() && c <= i) {
-            current = q.poll();
-            if (current.left != null) {
-                q.add(current.left);
-                c++;
-            }
-            if (c <= i && current.right != null) {
-                q.add(current.right);
-                c++;
+    private Node find(int pos) {
+        Node result = root;
+        int mask = getMask(pos);
+        while (mask > 1) {
+            mask >>>= 1;
+            if ((pos & mask) == 0) {
+                result = result.left;
+            } else {
+                result = result.right;
             }
         }
-        return current;
+        return result;
     }
 
-
-    private void traverseLevelOrder(Node... nodes) {
-        for (Node n : nodes) {
-            traverseLevelOrder(n);
+    private int getMask(int pos) {
+        int mask = 0b10000000;
+        while (mask > 0) {
+            if ((pos & mask) != 0) {
+                return mask;
+            }
+            mask >>>= 1;
         }
+        return 0;
     }
 
     public int size() {
