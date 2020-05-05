@@ -3,21 +3,20 @@ import java.util.Queue;
 
 public class Heap {
 
-
-    public Heap(int... priorities) {
-        root = buildTree(priorities, 0, priorities.length - 1);
-        balanceNodesDown();
-        size = priorities.length;
+    public Heap() {
     }
 
     private int size = 0;
     private Node root = null;
 
-    public Heap() {
+    public Heap(int... priorities) {
+        root = buildTree(priorities, 0, priorities.length - 1);
+        size = priorities.length;
+        balanceNodesDown();
     }
 
     public static void main(String[] args) {
-        Heap heap = new Heap(1, 2, 3);
+        Heap heap = new Heap(3, 2, 1);
         heap.show();
     }
 
