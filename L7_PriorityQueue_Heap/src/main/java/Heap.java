@@ -7,53 +7,25 @@ public class Heap {
     private Node root = null;
 
     public Heap(int... priorities) {
-        root = buildTree(priorities, 0, priorities.length - 1);
+        root = buildTree(priorities, 0, priorities.length - 1, null);
         size = priorities.length;
         balanceNodesDown();
     }
 
     public static void main(String[] args) {
-        Heap heap = new Heap(3, 2, 1, 32, 5, 12, 322, 123, 55);
+        Heap heap = new Heap(3, 2, 1, 32, 33);
         heap.show();
-//        System.out.println("find 1 " + heap.find(1).priority);
-//        System.out.println("find 2 " + heap.find(2).priority);
-//        System.out.println("find 3 " + heap.find(3).priority);
-//        System.out.println("find 4 " + heap.find(4).priority);
-
-        int pos = 8;
-        int mask = 0b10000000;
-        while (mask > 0) {
-            if ((pos & mask) != 0) {
-                break;
-            }
-            mask >>>= 1;
-        }
-
-        Node result = heap.root;
-        while (mask > 1) {
-            mask >>>= 1;
-
-
-            if ((pos & mask) == 0) {
-                result = result.left;
-            } else {
-                result = result.right;
-            }
-        }
-
-        System.out.println(result.priority);
-
-
     }
 
-    private Node buildTree(int[] values, int start, int end) {
+    private Node buildTree(int[] values, int start, int end, Node parent) {
         Node node = null;
         if (start <= end) {
             int m = (start + end) / 2;
             node = new Node();
             node.priority = values[m];
-            node.left = buildTree(values, m + 1, end);
-            node.right = buildTree(values, start, m - 1);
+            node.parent = parent;
+            node.left = buildTree(values, m + 1, end, node);
+            node.right = buildTree(values, start, m - 1, node);
         }
         return node;
     }
