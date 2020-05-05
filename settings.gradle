@@ -4,4 +4,5 @@ include 'L2_Lists_Stack'
 include 'L3_DoublyLinkedList_MergeSort'
 include 'L4_Trees'
 include 'L5_ALV_Tree'
+include 'L7_PriorityQueue_Heap'
 
