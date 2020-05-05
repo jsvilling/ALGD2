@@ -28,7 +28,6 @@ public class Heap {
 
     private void balanceNodes() {
         int m = size / 2;
-
         while (m > 0) {
             Node node = find(m);
             sickleDown(node);
@@ -66,9 +65,21 @@ public class Heap {
 
     }
 
-    void show() {
-
+    public void show() {
+        show(root, 0);
     }
+
+    private void show(Node root, int level) {
+        if (root != null) {
+            show(root.right, level + 1);
+            for (int i = 0; i < level; ++i) {
+                System.out.print("    ");
+            }
+            System.out.println(root.priority);
+            show(root.left, level + 1);
+        }
+    }
+
 
     private class Node {
         int priority;
