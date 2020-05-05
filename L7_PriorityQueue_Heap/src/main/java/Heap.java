@@ -1,4 +1,14 @@
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class Heap {
+
+
+    public Heap(int... priorities) {
+        root = buildTree(priorities, 0, priorities.length - 1);
+        balanceNodesDown();
+        size = priorities.length;
+    }
 
     private int size = 0;
     private Node root = null;
@@ -6,37 +16,30 @@ public class Heap {
     public Heap() {
     }
 
-    public Heap(int[] priorities) {
-        setupBinaryTree(priorities);
-        size = priorities.length;
+    public static void main(String[] args) {
+        Heap heap = new Heap(1, 2, 3);
+        heap.show();
     }
 
-    private void setupBinaryTree(int[] priorities) {
-        this.root = buildNode(new Node(), 0, priorities)
-    }
-
-    private Node buildNode(Node root, int i, int[] priorities) {
-        if (i >= priorities.length || root == null) {
-            return null;
+    private Node buildTree(int[] values, int start, int end) {
+        Node node = null;
+        if (start <= end) {
+            int m = (start + end) / 2;
+            node = new Node();
+            node.priority = values[m];
+            node.left = buildTree(values, start, m - 1);
+            node.right = buildTree(values, m + 1, end);
         }
-        Node node = new Node();
-        node.parent = root;
-        node.left = buildNode(node, ++i, priorities);
-        node.right = buildNode(node, ++i, priorities);
         return node;
     }
 
-    private void balanceNodes() {
+    private void balanceNodesDown() {
         int m = size / 2;
         while (m > 0) {
             Node node = find(m);
             sickleDown(node);
             m /= 2;
         }
-    }
-
-    private Node find(int i) {
-        return root;
     }
 
     private void sickleDown(Node node) {
@@ -50,7 +53,36 @@ public class Heap {
     }
 
     public int get() {
-        return 0;
+        if (root == null) {
+            throw new IllegalArgumentException();
+        }
+        return root.priority;
+    }
+
+    private Node find(int i) {
+        Queue<Node> q = new ArrayDeque<>();
+        Node current = null;
+        q.add(root);
+        int c = 1;
+        while (!q.isEmpty() && c <= i) {
+            current = q.poll();
+            if (current.left != null) {
+                q.add(current.left);
+                c++;
+            }
+            if (c <= i && current.right != null) {
+                q.add(current.right);
+                c++;
+            }
+        }
+        return current;
+    }
+
+
+    private void traverseLevelOrder(Node... nodes) {
+        for (Node n : nodes) {
+            traverseLevelOrder(n);
+        }
     }
 
     public int size() {
