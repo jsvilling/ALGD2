@@ -119,7 +119,15 @@ public class Heap {
     }
 
     public void insert(int priority) {
-
+        Node newNode = new Node();
+        newNode.priority = priority;
+        Node parent = find((size + 1) / 2);
+        newNode.parent = parent;
+        if (parent.left == null) {
+            parent.left = newNode;
+        } else {
+            parent.right = newNode;
+        }
     }
 
     public void show() {
